@@ -1,6 +1,7 @@
 var express = require('express');
 var requestIp = require('request-ip');
 var router = express.Router();
+var GOOGLE_MAPS_KEY = "AIzaSyATPxs1A1SXw_eJUn5FxnTNjpIEc193nNM";
 
 /* GET home page. */
 router.get('/index', function(req, res, next) {

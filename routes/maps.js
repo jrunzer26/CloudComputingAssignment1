@@ -2,9 +2,8 @@ var express = require('express');
 var requestIp = require('request-ip');
 var router = express.Router();
 
-/* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  return res.render('geosaver', { title: 'Geosaver' });
 });
 
 module.exports = router;
