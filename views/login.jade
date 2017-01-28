@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  form
+    div(class="loginForm") 
+      label(class="formLabel") Username
+      br
+      input(class="form-control" type="text" placeholder="Username" name="username" required)
+      br
+      label(class="formLabel") Password
+      br
+      input(class ="form-control" type="password" placeholder="Password" name="password" required)
+      br
+      button(type="submit" class="btn loginButton") Login
+
+  

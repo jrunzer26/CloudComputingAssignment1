@@ -1,8 +1,43 @@
-body {
-  padding: 50px;
+html, body {
+  padding: 0px;
+  margin: 0px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
+}
+
+.header {
+  color:white;
+  padding-left: 30px;
+	padding-top: 60px;
+	padding-bottom: 20px;
+  background-color: #673AB7;
+}
+
+form {
+  background-color: white;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.formLabel {
+  padding-bottom: 5px;
+}
+
+.loginButton {
+  background-color: #673AB7;
+  color: white;
+  float: right;
+}
+
+.footer {
+  background-color: #D1C4E9;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
 }
