@@ -1,4 +1,4 @@
 INSERT INTO Markers ("lat", "lng") VALUES (
-    43.9434,
-    78.8955
+    43.945376,
+    -78.896397
 );
