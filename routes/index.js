@@ -1,24 +1,27 @@
 var express = require('express');
 var requestIp = require('request-ip');
 var router = express.Router();
-var GOOGLE_MAPS_KEY = "AIzaSyATPxs1A1SXw_eJUn5FxnTNjpIEc193nNM";
-
-/* GET home page. */
-router.get('/index', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
-
-
-router.post('/saveIP', function(req, res, next) {
-  var ip = requestIp.getClientIp(req);
-  return res.status(200).send({ipAddress: ip});  
-});
-
+var GoogleAuth = require('google-auth-library');
+var auth = new GoogleAuth;
+var CLIENT_ID = '957314887645-6p2samrj66sicgk3ruopl4b3bis3ksv1.apps.googleusercontent.com';
+var client = new auth.OAuth2(CLIENT_ID, '', '');
 
 /* Login page. */
-
 router.get('/', function(req, res, next) {
-  return res.render('login', {title: 'GeoSaver Login'});
+  return res.render('login', {title: 'GeoMesseger Login'});
+});
+
+router.post('/googleAuth', function(req, res, next) {
+  //console.log(req.body.token);
+  client.verifyIdToken(
+    token,
+    CLIENT_ID,
+    function(e, login) {
+      var payload = login.getPayload();
+      var userid = payload['sub'];
+      console.log(userid);
+      return res.status(200).json({success: "success"});
+    });
 });
 
 module.exports = router;

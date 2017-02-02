@@ -13,6 +13,7 @@ a {
   padding-left: 30px;
 	padding-top: 60px;
 	padding-bottom: 20px;
+  margin-bottom: 50px;
   background-color: #673AB7;
 }
 
@@ -29,9 +30,7 @@ form {
 }
 
 .loginButton {
-  background-color: #673AB7;
-  color: white;
-  float: right;
+
 }
 
 .footer {
@@ -49,3 +48,23 @@ form {
   margin-right: 30px;
   margin-top: 30px;
 }
+
+#logoContainer {
+  width: 40%;
+  max-width: 400px;
+  margin: auto;
+}
+
+#signInContainer {
+  width: 400px;
+  margin: auto;
+  background: blue;
+}
+
+#signOutBtn {
+  display: none;
+  background-color: #673AB7;
+  color: white;
+  float: right;
+}
+

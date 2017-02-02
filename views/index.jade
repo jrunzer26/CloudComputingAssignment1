@@ -1,5 +1,8 @@
 extends layout
 
+block optionalHeaders
+meta(name="google-signin-scope" content="profile email")
+<meta name="google-signin-client_id" content="YOUR_CLIENT_ID.apps.googleusercontent.com">
 block content
   h1= title
   p Welcome to #{title}
