@@ -1,6 +1,7 @@
 html, body {
   padding: 0px;
   margin: 0px;
+  height: 100%;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
@@ -13,7 +14,6 @@ a {
   padding-left: 30px;
 	padding-top: 60px;
 	padding-bottom: 20px;
-  margin-bottom: 50px;
   background-color: #673AB7;
 }
 
@@ -31,8 +31,9 @@ form {
 
 
 .footer {
-  background-color: #D1C4E9;
+  background-color: #673AB7;
   position: fixed;
+  color:white;
   bottom: 0;
   width: 100%;
   text-align: center;
@@ -41,7 +42,6 @@ form {
 #map {
   height: 400px;
   width: 100%;
-  margin-left: 30px;
   margin-right: 30px;
   margin-top: 30px;
 }
@@ -59,13 +59,36 @@ form {
 }
 
 #signOut {
+  margin-top: 30px;
+	margin-bottom: 20px;
+  margin-right: 20px;
   float: right;
-  text-align: center;
-  vertical-align: middle;
 }
 
 h1 {
   display: inline-block;
+}
+
+#mapContainer, #messageContainer {
+  width: 70%;
+  padding-left:30px;
+  padding-right:30px;
+}
+
+#messageContainer {
+  height:100%;
+  background-color: lightseagreen;
+}
+
+#mapContainer {
+  display: inline-block;
+}
+
+#messageFeed {
+  float: right;
+  width: 30%;
+  height: 100%;
+  background-color: #EDE7F6;
 }
 
 

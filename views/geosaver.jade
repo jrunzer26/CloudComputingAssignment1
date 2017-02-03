@@ -4,7 +4,17 @@ block headerContent
   button(type="submit" class="btn" id="signOut" onclick="signOut()") Sign Out
 
 block content
-  div(id="map")
+  #mapContainer
+    div(id="map")
+  #messageFeed
+    p feed
   script(src="/javascripts/maps.js")
   script(async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyATPxs1A1SXw_eJUn5FxnTNjpIEc193nNM&callback=initMap")
-  button(type="submit" class="btn" id="saveLocation") Add My Location
+  br
+  #messageContainer
+      p Name
+      #nameField
+      p message
+      button(type="submit" class="btn" id="saveMessage" onclick="sendMessage()") Send Message
+
+    
