@@ -5,11 +5,16 @@ html
     link(rel='stylesheet', href='stylesheets/bootstrap.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
     script(src='/javascripts/javascripts.js')
+    script(src='/javascripts/oAuth.js')
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js')
-    block optionalHeaders
+    meta(name="google-signin-scope" content="profile email")
+    <meta name="google-signin-client_id" content="957314887645-6p2samrj66sicgk3ruopl4b3bis3ksv1.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+
   body
     div(class="header")
       h1 #{title}
+      block headerContent
     block content
     footer(class="footer")
       p Jason Runzer

@@ -3,10 +3,16 @@ var requestIp = require('request-ip');
 var router = express.Router();
 var pgp = require('pg-promise')();
 var db = pgp(process.env.DATABASE_URL);
+var util = require('../util.js');
 pgp.pg.defaults.ssl = true;
 
 router.get('/', function(req, res, next) {
-  return res.render('geosaver', { title: 'Geosaver' });
+  console.log('cookie: ');
+  console.log(req.cookies.email);
+  console.log(req.cookies.img);
+  console.log(req.cookies.name);
+  console.log(util.checkCookies(req.cookies));
+  return res.render('geosaver', { title: 'GeoMessenger' });
 });
 
 router.post('/saveLocation', function(req, res, next) {
@@ -14,6 +20,10 @@ router.post('/saveLocation', function(req, res, next) {
   console.log(req.body.lng);
   var lat = req.body.lat;
   var lng = req.body.lng;
+
+  if (util.checkCookies(cookies) != true) {
+    return res.status(407).json({err: "Invalid Session"});
+  }
 
   db.query('INSERT INTO Markers ("lat", "lng") ' +
     'VALUES($1, $2);',
@@ -24,12 +34,9 @@ router.post('/saveLocation', function(req, res, next) {
   .catch(function() {
     return res.status(407).json({"err": "Could not save location"});
   })
-
 });
 
 router.get('/savedMarkers', function(req, res, next) {
-  console.log("database URL: ");
-  console.log(process.env.DATABASE_URL);
   db.any('SELECT *      ' +
          'FROM Markers; ')
   .then(function (data) {
@@ -40,10 +47,10 @@ router.get('/savedMarkers', function(req, res, next) {
     var JSON_Markers = [];
     while(count < data.length) {
       JSON_Markers.push({lat: data[count].lat, lng: data[count].lng});
-      console.log("count: " + count);
-      console.log("data length: " + data.length);
+      //console.log("count: " + count);
+      //console.log("data length: " + data.length);
       count++;
-      console.log(count);
+      //console.log(count);
       if (count == data.length) {
         return res.status(200).json(JSON_Markers);
       }
@@ -54,5 +61,6 @@ router.get('/savedMarkers', function(req, res, next) {
     return res.status(409).json({"err": "error"});
   });
 });
+
 
 module.exports = router;

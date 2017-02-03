@@ -1,14 +1,10 @@
 extends layout
-block optionalHeaders
-  meta(name="google-signin-scope" content="profile email")
-  <meta name="google-signin-client_id" content="957314887645-6p2samrj66sicgk3ruopl4b3bis3ksv1.apps.googleusercontent.com">
-  <script src="https://apis.google.com/js/platform.js" async defer></script>
-  script(src="javascripts/oAuth.js")
+
+
 block content
   #logoContainer
     img(id="img-logo" class="img-circle img-responsive" src="/images/logo.png")
   #signInContainer
     div(class="g-signin2" data-onsuccess="onSignIn" data-theme="dark")
-    button(id="signOutBtn" class="btn" onclick="signOut()") Sign Out
 
   

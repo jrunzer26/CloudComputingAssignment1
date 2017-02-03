@@ -29,9 +29,6 @@ form {
   padding-bottom: 5px;
 }
 
-.loginButton {
-
-}
 
 .footer {
   background-color: #D1C4E9;
@@ -61,10 +58,15 @@ form {
   background: blue;
 }
 
-#signOutBtn {
-  display: none;
-  background-color: #673AB7;
-  color: white;
+#signOut {
   float: right;
+  text-align: center;
+  vertical-align: middle;
 }
+
+h1 {
+  display: inline-block;
+}
+
+
 

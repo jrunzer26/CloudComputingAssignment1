@@ -68,7 +68,6 @@ function addMarker(latLng) {
     position: markerPosition,
     map: map
   });
-  console.log("marker added");
 }
 
 $(document).ready(function() {
