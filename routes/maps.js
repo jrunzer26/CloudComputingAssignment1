@@ -17,14 +17,12 @@ router.get('/', function(req, res, next) {
 router.post('/saveMessage', function(req, res, next) {
   console.log(req.body.lat);
   console.log(req.body.lng);
+  console.log(req.body.name);
+  console.log(req.body.message);
   var lat = req.body.lat;
   var lng = req.body.lng;
   var message = req.body.message;
   var name = req.body.name;
-
-  if (util.checkCookies(cookies) != true) {
-    return res.status(407).json({err: "Invalid Session"});
-  }
 
   db.query('INSERT INTO Markers ("lat", "lng", "name", "message") ' +
            'VALUES($1, $2, $3, $4);                               ',
@@ -34,7 +32,7 @@ router.post('/saveMessage', function(req, res, next) {
   })
   .catch(function() {
     return res.status(407).json({"err": "Could not save location"});
-  })
+  });
 });
 
 router.get('/savedMarkers', function(req, res, next) {

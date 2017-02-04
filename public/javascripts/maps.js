@@ -89,37 +89,55 @@ function addMarker(markerInfo) {
   });
 }
 
-$(document).ready(function() {
-	$('#saveLocation').click(function() {
-		if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function(position) {
-      var pos = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      };
-      saveLocation(pos);
-      }, function() {
-        console.log("Error saving location");
-      });
-    } else {
-      // Browser doesn't support Geolocation
-      console.log("Error saving location");
-    }
-	});
-});
 
-function saveLocation(pos) {
-// GET the saved markers
+function sendMessage() {
+  var text = $('#messageField').val();
+  console.log(text);
+  console.log('jason');
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+    var messageObject = {
+      lat: position.coords.latitude,
+      lng: position.coords.longitude,
+      name: 'jason',
+      message: text
+    };
+    saveMessage(messageObject);
+    }, function() {
+      console.log("Error saving location");
+    });
+  } else {
+    // Browser doesn't support Geolocation
+    console.log("Error saving location");
+  }
+}
+
+function saveMessage(messageObject) {
+  console.log('save message');
   $.ajax({
     type: 'POST',
-    url: '/map/saveLocation',
-    data: JSON.stringify(pos),
+    url: '/map/saveMessage',
+    data: JSON.stringify(messageObject),
     contentType: "application/json; charset=utf-8",
     success: function(res) {
       console.log("success");
+      popUpOurMessage(messageObject);
     },
     error: function(res) {
       console.log(res);
     }
   });
 };
+
+function popUpOurMessage(message) {
+  var text = '<h5>'+message.name+'</h5>' +
+    '<p>'+message.message+'</p>';
+  
+  infoWindow = new google.maps.InfoWindow({
+    content: text
+  });
+  locationMarker.addListener('click', function() {
+      infoWindow.open(map, locationMarker);
+    });
+  infoWindow.open(map, locationMarker);
+}
