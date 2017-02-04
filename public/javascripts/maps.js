@@ -1,7 +1,7 @@
 var map;
 var locationMarker;
 var infoWindow;
-
+var currentMessageId = 0;
 function initMap() {
   var uluru = {lat: -25.363, lng: 131.044};
   map = new google.maps.Map(document.getElementById('map'), {
@@ -63,6 +63,7 @@ function addAllSavedMarkers() {
           console.log(res[i].name);
           console.log(res[i].message);
           addMarker(res[i], map);
+          insertMessageIntoToFeed(res[i]);
 				}
 			},
 			error: function(res) {
@@ -92,14 +93,12 @@ function addMarker(markerInfo) {
 
 function sendMessage() {
   var text = $('#messageField').val();
-  console.log(text);
-  console.log('jason');
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
     var messageObject = {
       lat: position.coords.latitude,
       lng: position.coords.longitude,
-      name: 'jason',
+      name: $.cookie('name'),
       message: text
     };
     saveMessage(messageObject);
@@ -140,4 +139,12 @@ function popUpOurMessage(message) {
       infoWindow.open(map, locationMarker);
     });
   infoWindow.open(map, locationMarker);
-}
+  insertMessageIntoToFeed(message);
+};
+
+function insertMessageIntoToFeed(message) {
+  var messageHTML = '<div class="message" id="'+ currentMessageId + '"><h5>'+message.name+'</h5>'+
+    '<p>'+message.message+'</p><hr></div>';
+  $("#messageFeed").prepend(messageHTML);
+  currentMessageId++;
+};

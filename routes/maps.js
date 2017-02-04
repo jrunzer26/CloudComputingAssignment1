@@ -1,5 +1,4 @@
 var express = require('express');
-var requestIp = require('request-ip');
 var router = express.Router();
 var pgp = require('pg-promise')();
 var db = pgp(process.env.DATABASE_URL);
@@ -47,10 +46,7 @@ router.get('/savedMarkers', function(req, res, next) {
     while(count < data.length) {
       JSON_Markers.push({lat: data[count].lat, lng: data[count].lng,
         name: data[count].name, message:data[count].message});
-      //console.log("count: " + count);
-      //console.log("data length: " + data.length);
       count++;
-      //console.log(count);
       if (count == data.length) {
         return res.status(200).json(JSON_Markers);
       }
