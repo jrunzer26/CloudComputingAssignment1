@@ -12,9 +12,13 @@ block content
   script(async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyATPxs1A1SXw_eJUn5FxnTNjpIEc193nNM&callback=initMap")
   br
   #messageContainer
-      p Name
-      #nameField
-      p message
+    form(id="messageForm")
+      .form-group
+        label(id="font-big") #{name}
+      .form-group
+        label Message
+        textarea(class="form-control inputdefault" id="messageField" type="text" rows="3")
+
       button(type="submit" class="btn" id="saveMessage" onclick="sendMessage()") Send Message
 
     

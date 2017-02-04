@@ -52,10 +52,23 @@ form {
   margin: auto;
 }
 
+#img-logo {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
 #signInContainer {
   width: 400px;
   margin: auto;
   background: blue;
+}
+
+.g-signin2{
+  width: 100%;
+}
+
+.g-signin2 > div{
+  margin: 0 auto;
 }
 
 #signOut {
@@ -63,6 +76,12 @@ form {
 	margin-bottom: 20px;
   margin-right: 20px;
   float: right;
+}
+
+#signOut, #saveMessage {
+  color: black;
+  background-color: white;
+  font-weight: bold;
 }
 
 h1 {
@@ -77,8 +96,25 @@ h1 {
 
 #messageContainer {
   height:100%;
-  background-color: lightseagreen;
 }
+
+#font-big {
+  font-size: 25px;
+}
+
+#messageForm {
+  margin-top: 30px;
+  color: white;
+  background-color:#7E57C2;
+  border-radius: 10px;
+}
+
+#saveMessage {
+  color:black;
+  background-color: white;
+  font-weight: bold;
+}
+
 
 #mapContainer {
   display: inline-block;

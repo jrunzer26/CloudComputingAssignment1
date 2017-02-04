@@ -1,26 +1,35 @@
 var map;
+var locationMarker;
+var infoWindow;
+
 function initMap() {
   var uluru = {lat: -25.363, lng: 131.044};
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: 15,
     center: uluru
   });
-  var marker = new google.maps.Marker({
-  position: uluru,
-  map: map
-  });
   // Try HTML5 geolocation.
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
     var pos = {
       lat: position.coords.latitude,
-      lng: position.coords.longitude
+      lng: position.coords.longitude,
     };
-    var marker = new google.maps.Marker({
+    locationMarker = new google.maps.Marker({
       position: pos,
       map: map
     })
+    
     map.setCenter(pos);
+      var text = '<h5>Your Location</h3>';
+    infoWindow = new google.maps.InfoWindow({
+      content: text
+    });
+
+    locationMarker.addListener('click', function() {
+      infoWindow.open(map, locationMarker);
+    });
+
     addAllSavedMarkers();
     }, function() {
       handleLocationError(true, infoWindow, map.getCenter());
@@ -51,6 +60,8 @@ function addAllSavedMarkers() {
           console.log(res[i]);
           console.log(res[i].lat);
           console.log(res[i].lng);
+          console.log(res[i].name);
+          console.log(res[i].message);
           addMarker(res[i], map);
 				}
 			},
@@ -61,12 +72,20 @@ function addAllSavedMarkers() {
 	});
 }
 
-function addMarker(latLng) {
-  var markerPosition = {lat: parseFloat(latLng.lat), lng: parseFloat(latLng.lng)};
+function addMarker(markerInfo) {
+  var markerPosition = {lat: parseFloat(markerInfo.lat), lng: parseFloat(markerInfo.lng)};
   console.log(markerPosition);
   var marker = new google.maps.Marker({
     position: markerPosition,
-    map: map
+    map: map,
+  });
+  var text = '<h5>'+markerInfo.name+'</h5>'+
+    '<p>'+markerInfo.message+'</p>';
+  var infoWindow = new google.maps.InfoWindow({
+    content: text
+  });
+  marker.addListener('click', function() {
+    infoWindow.open(map, marker);
   });
 }
 

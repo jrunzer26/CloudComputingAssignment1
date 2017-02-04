@@ -8,26 +8,27 @@ pgp.pg.defaults.ssl = true;
 
 router.get('/', function(req, res, next) {
   console.log('cookie: ');
-  console.log(req.cookies.email);
-  console.log(req.cookies.img);
-  console.log(req.cookies.name);
-  console.log(util.checkCookies(req.cookies));
-  return res.render('geosaver', { title: 'GeoMessenger' });
+  if (util.checkCookies(req.cookies) != true) {
+    return res.redirect('/');
+  }
+  return res.render('geosaver', { title: 'GeoMessenger', name: req.cookies.name });
 });
 
-router.post('/saveLocation', function(req, res, next) {
+router.post('/saveMessage', function(req, res, next) {
   console.log(req.body.lat);
   console.log(req.body.lng);
   var lat = req.body.lat;
   var lng = req.body.lng;
+  var message = req.body.message;
+  var name = req.body.name;
 
   if (util.checkCookies(cookies) != true) {
     return res.status(407).json({err: "Invalid Session"});
   }
 
-  db.query('INSERT INTO Markers ("lat", "lng") ' +
-    'VALUES($1, $2);',
-    [lat, lng])
+  db.query('INSERT INTO Markers ("lat", "lng", "name", "message") ' +
+           'VALUES($1, $2, $3, $4);                               ',
+    [lat, lng, name, message])
   .then(function() {
     return res.status(200).json({"success": "success"});
   })
@@ -46,7 +47,8 @@ router.get('/savedMarkers', function(req, res, next) {
     var count = 0;
     var JSON_Markers = [];
     while(count < data.length) {
-      JSON_Markers.push({lat: data[count].lat, lng: data[count].lng});
+      JSON_Markers.push({lat: data[count].lat, lng: data[count].lng,
+        name: data[count].name, message:data[count].message});
       //console.log("count: " + count);
       //console.log("data length: " + data.length);
       count++;
