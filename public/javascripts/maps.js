@@ -2,6 +2,16 @@ var map;
 var locationMarker;
 var infoWindow;
 var currentMessageId = 0;
+var currentLocation;
+
+var socket = io();
+socket.on('messageFeed', function (data) {
+  addMarker(data, true);
+  insertMessageIntoToFeed(data);
+});
+
+
+
 function initMap() {
   var uluru = {lat: -25.363, lng: 131.044};
   map = new google.maps.Map(document.getElementById('map'), {
@@ -15,6 +25,7 @@ function initMap() {
       lat: position.coords.latitude,
       lng: position.coords.longitude,
     };
+    currentLocation = pos;
     locationMarker = new google.maps.Marker({
       position: pos,
       map: map
@@ -54,15 +65,9 @@ function addAllSavedMarkers() {
 			url: '/map/savedMarkers',
 			contentType: "application/json; charset=utf-8",
 			success: function(res) {
-        console.log(res[0]);
 				for (var i = 0; i < res.length; i++) {
           // Add markers to the map
-          console.log(res[i]);
-          console.log(res[i].lat);
-          console.log(res[i].lng);
-          console.log(res[i].name);
-          console.log(res[i].message);
-          addMarker(res[i], map);
+          addMarker(res[i], false);
           insertMessageIntoToFeed(res[i]);
 				}
 			},
@@ -73,25 +78,45 @@ function addAllSavedMarkers() {
 	});
 }
 
-function addMarker(markerInfo) {
+function addMarker(markerInfo, openWindow) {
   var markerPosition = {lat: parseFloat(markerInfo.lat), lng: parseFloat(markerInfo.lng)};
-  console.log(markerPosition);
+  console.log(markerInfo);
   var marker = new google.maps.Marker({
     position: markerPosition,
     map: map,
   });
   var text = '<h5>'+markerInfo.name+'</h5>'+
     '<p>'+markerInfo.message+'</p>';
-  var infoWindow = new google.maps.InfoWindow({
+  var infoWindowTemp = new google.maps.InfoWindow({
     content: text
   });
+  
   marker.addListener('click', function() {
-    infoWindow.open(map, marker);
+    infoWindowTemp.open(map, marker);
   });
+  if(openWindow) {
+    if (markerMessageInCurrentLocaiton(markerInfo)) {
+      locationMarker.setMap(null);
+      locationMarker = marker;
+      infoWindow.close();
+      infoWindow = infoWindowTemp;
+    }
+    infoWindowTemp.open(map, marker);
+    
+  }
+}
+
+function markerMessageInCurrentLocaiton(markerInfo) {
+  if (markerInfo.lat == currentLocation.lat && markerInfo.lng == currentLocation.lng) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 
 function sendMessage() {
+  socket.emit('chat message', 'test');
   var text = $('#messageField').val();
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
@@ -120,7 +145,6 @@ function saveMessage(messageObject) {
     contentType: "application/json; charset=utf-8",
     success: function(res) {
       console.log("success");
-      popUpOurMessage(messageObject);
     },
     error: function(res) {
       console.log(res);
@@ -128,19 +152,7 @@ function saveMessage(messageObject) {
   });
 };
 
-function popUpOurMessage(message) {
-  var text = '<h5>'+message.name+'</h5>' +
-    '<p>'+message.message+'</p>';
-  
-  infoWindow = new google.maps.InfoWindow({
-    content: text
-  });
-  locationMarker.addListener('click', function() {
-      infoWindow.open(map, locationMarker);
-    });
-  infoWindow.open(map, locationMarker);
-  insertMessageIntoToFeed(message);
-};
+
 
 function insertMessageIntoToFeed(message) {
   var messageHTML = '<div class="message" id="'+ currentMessageId + '"><h5>'+message.name+'</h5>'+

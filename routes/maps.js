@@ -1,12 +1,13 @@
 var express = require('express');
+var app = express();
 var router = express.Router();
 var pgp = require('pg-promise')();
 var db = pgp(process.env.DATABASE_URL);
 var util = require('../util.js');
+
 pgp.pg.defaults.ssl = true;
 
 router.get('/', function(req, res, next) {
-  console.log('cookie: ');
   if (util.checkCookies(req.cookies) != true) {
     return res.redirect('/');
   }
@@ -14,19 +15,23 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/saveMessage', function(req, res, next) {
-  console.log(req.body.lat);
-  console.log(req.body.lng);
-  console.log(req.body.name);
-  console.log(req.body.message);
+  
+  
   var lat = req.body.lat;
   var lng = req.body.lng;
   var message = req.body.message;
   var name = req.body.name;
 
+  res.io.sockets.emit("messageFeed", {lat: lat, lng: lng, 
+      message: message, name: name});
   db.query('INSERT INTO Markers ("lat", "lng", "name", "message") ' +
            'VALUES($1, $2, $3, $4);                               ',
     [lat, lng, name, message])
   .then(function() {
+    res.io.sockets.emit("messageFeed", {lat: lat, lng: lng, 
+      message: message, name: name});
+      
+      //res.io.sockets.broadcast.emit('user connected');
     return res.status(200).json({"success": "success"});
   })
   .catch(function() {
