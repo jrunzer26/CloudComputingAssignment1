@@ -4,6 +4,8 @@ var router = express.Router();
 var pgp = require('pg-promise')();
 var db = pgp(process.env.DATABASE_URL);
 var util = require('../util.js');
+var badWords = require('bad-words');
+var filter = new badWords();
 
 pgp.pg.defaults.ssl = true;
 
@@ -19,7 +21,7 @@ router.post('/saveMessage', function(req, res, next) {
   
   var lat = req.body.lat;
   var lng = req.body.lng;
-  var message = req.body.message;
+  var message = filter.clean(req.body.message);
   var name = req.body.name;
   db.query('INSERT INTO Markers ("lat", "lng", "name", "message") ' +
            'VALUES($1, $2, $3, $4);                               ',

@@ -3,12 +3,13 @@ var locationMarker;
 var infoWindow;
 var currentMessageId = 0;
 var currentLocation;
+var messageFeedCount = 0;
+var lastRemovedMessageID = 0;
+var MESSAGE_FEED_LIMIT = 9;
 
 var socket = io();
 socket.on('messageFeed', function (data) {
   addMarker(data, true);
-  console.log('received');
-  insertMessageIntoToFeed(data);
 });
 
 
@@ -162,5 +163,13 @@ function insertMessageIntoToFeed(message, aInfoWindow, marker) {
   $("#" + currentMessageId).click(function() {
     aInfoWindow.open(map, marker)
   });
+  messageFeedCount++;
+  console.log('message feed count: ' + messageFeedCount);
+  while(lastRemovedMessageID < messageFeedCount - MESSAGE_FEED_LIMIT) {
+    $("#" + lastRemovedMessageID).remove();
+    lastRemovedMessageID++;
+    console.log(lastRemovedMessageID);
+    console.log('removed');
+  }
   currentMessageId++;
 };

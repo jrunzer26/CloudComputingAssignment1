@@ -95,7 +95,7 @@ h1 {
 }
 
 #messageContainer {
-  height:100%;
+  position: absolute;
 }
 
 #font-big {
@@ -125,6 +125,24 @@ h1 {
   width: 30%;
   height: 100%;
   background-color: #EDE7F6;
+}
+
+.message {
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+
+.message > h5 {
+  font-weight: bold;
+}
+
+.message > p {
+  padding-left: 8px;
+}
+
+hr {
+  border-color: black;
 }
 
 
