@@ -69,7 +69,7 @@ function addAllSavedMarkers() {
 				for (var i = 0; i < res.length; i++) {
           // Add markers to the map
           addMarker(res[i], false);
-          insertMessageIntoToFeed(res[i]);
+          
 				}
 			},
 			error: function(res) {
@@ -105,6 +105,7 @@ function addMarker(markerInfo, openWindow) {
     infoWindowTemp.open(map, marker);
     
   }
+  insertMessageIntoToFeed(markerInfo, infoWindowTemp, marker);
 }
 
 function markerMessageInCurrentLocaiton(markerInfo) {
@@ -154,10 +155,12 @@ function saveMessage(messageObject) {
 
 
 
-function insertMessageIntoToFeed(message) {
+function insertMessageIntoToFeed(message, aInfoWindow, marker) {
   var messageHTML = '<div class="message" id="'+ currentMessageId + '"><h5>'+message.name+'</h5>'+
     '<p>'+message.message+'</p><hr></div>';
   $("#messageFeed").prepend(messageHTML);
-  console.log('heeloooo?');
+  $("#" + currentMessageId).click(function() {
+    aInfoWindow.open(map, marker)
+  });
   currentMessageId++;
 };
