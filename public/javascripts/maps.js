@@ -7,6 +7,7 @@ var currentLocation;
 var socket = io();
 socket.on('messageFeed', function (data) {
   addMarker(data, true);
+  console.log('received');
   insertMessageIntoToFeed(data);
 });
 
@@ -96,9 +97,9 @@ function addMarker(markerInfo, openWindow) {
   });
   if(openWindow) {
     if (markerMessageInCurrentLocaiton(markerInfo)) {
+      infoWindow.close();
       locationMarker.setMap(null);
       locationMarker = marker;
-      infoWindow.close();
       infoWindow = infoWindowTemp;
     }
     infoWindowTemp.open(map, marker);
@@ -116,7 +117,6 @@ function markerMessageInCurrentLocaiton(markerInfo) {
 
 
 function sendMessage() {
-  socket.emit('chat message', 'test');
   var text = $('#messageField').val();
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
@@ -158,5 +158,6 @@ function insertMessageIntoToFeed(message) {
   var messageHTML = '<div class="message" id="'+ currentMessageId + '"><h5>'+message.name+'</h5>'+
     '<p>'+message.message+'</p><hr></div>';
   $("#messageFeed").prepend(messageHTML);
+  console.log('heeloooo?');
   currentMessageId++;
 };

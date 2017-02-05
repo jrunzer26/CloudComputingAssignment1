@@ -21,9 +21,6 @@ router.post('/saveMessage', function(req, res, next) {
   var lng = req.body.lng;
   var message = req.body.message;
   var name = req.body.name;
-
-  res.io.sockets.emit("messageFeed", {lat: lat, lng: lng, 
-      message: message, name: name});
   db.query('INSERT INTO Markers ("lat", "lng", "name", "message") ' +
            'VALUES($1, $2, $3, $4);                               ',
     [lat, lng, name, message])
