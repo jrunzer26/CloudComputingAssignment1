@@ -11,7 +11,6 @@ var io = require('socket.io')(server);
 
 
 var index = require('./routes/index');
-var users = require('./routes/users');
 var map = require('./routes/maps');
 
 // view engine setup
@@ -34,7 +33,6 @@ app.use(function(req,res,next){
 });
 
 app.use('/', index);
-app.use('/users', users);
 app.use('/map', map);
 
 

@@ -1,3 +1,10 @@
+/** 
+ * Author: Jason Runzer
+ * maps.js
+ * 2/7/2017
+ * Client side javascript for map manipulation, and server side interaction.
+ */
+
 var map;
 var locationMarker;
 var infoWindow;
@@ -7,14 +14,15 @@ var messageFeedCount = 0;
 var lastRemovedMessageID = 0;
 var MESSAGE_FEED_LIMIT = 9;
 
+// load the socket connection
 var socket = io();
 socket.on('messageFeed', function (data) {
   addMarker(data, true);
 });
 
-
-
+// initalize the google map 
 function initMap() {
+  // set a default starting location
   var uluru = {lat: -25.363, lng: 131.044};
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: 15,
@@ -28,21 +36,20 @@ function initMap() {
       lng: position.coords.longitude,
     };
     currentLocation = pos;
+    // put a location marker of the current postion on the map
     locationMarker = new google.maps.Marker({
       position: pos,
       map: map
     })
-    
     map.setCenter(pos);
-      var text = '<h5>Your Location</h3>';
+    // create an info window on your location
+    var text = '<h5>Your Location</h3>';
     infoWindow = new google.maps.InfoWindow({
       content: text
     });
-
     locationMarker.addListener('click', function() {
       infoWindow.open(map, locationMarker);
     });
-
     addAllSavedMarkers();
     }, function() {
       handleLocationError(true, infoWindow, map.getCenter());
@@ -52,7 +59,9 @@ function initMap() {
       handleLocationError(false, infoWindow, map.getCenter());
     }
 }
-
+/**
+ * Handles the location error if the browser does not support location.
+ */
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
   infoWindow.setPosition(pos);
   infoWindow.setContent(browserHasGeolocation ?
@@ -60,7 +69,9 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
     'Error: Your browser doesn\'t support geolocation.');
 }
 
-
+/**
+ * Retreives and adds all saved markers from the server.
+ */
 function addAllSavedMarkers() {
   $.ajax({
 			type: 'GET',
@@ -70,7 +81,6 @@ function addAllSavedMarkers() {
 				for (var i = 0; i < res.length; i++) {
           // Add markers to the map
           addMarker(res[i], false);
-          
 				}
 			},
 			error: function(res) {
@@ -80,23 +90,28 @@ function addAllSavedMarkers() {
 	});
 }
 
+/**
+ * Adds a marker to the map.
+ * markerInfo = {lat: 20.000, lng:21.000, name: 'jason runzer', message: 'hello'}
+ */
 function addMarker(markerInfo, openWindow) {
   var markerPosition = {lat: parseFloat(markerInfo.lat), lng: parseFloat(markerInfo.lng)};
-  console.log(markerInfo);
   var marker = new google.maps.Marker({
     position: markerPosition,
     map: map,
   });
+  // create the text for the marker. 
   var text = '<h5>'+markerInfo.name+'</h5>'+
     '<p>'+markerInfo.message+'</p>';
   var infoWindowTemp = new google.maps.InfoWindow({
     content: text
   });
-  
   marker.addListener('click', function() {
     infoWindowTemp.open(map, marker);
   });
+  // open the window if it is an incoming message
   if(openWindow) {
+    // try to close the info window in the current location if it is our message.
     if (markerMessageInCurrentLocaiton(markerInfo)) {
       infoWindow.close();
       locationMarker.setMap(null);
@@ -104,11 +119,13 @@ function addMarker(markerInfo, openWindow) {
       infoWindow = infoWindowTemp;
     }
     infoWindowTemp.open(map, marker);
-    
   }
   insertMessageIntoToFeed(markerInfo, infoWindowTemp, marker);
 }
 
+/**
+ * Check if the message is in the same location as the user, true if it is.
+ */
 function markerMessageInCurrentLocaiton(markerInfo) {
   if (markerInfo.lat == currentLocation.lat && markerInfo.lng == currentLocation.lng) {
     return true;
@@ -117,7 +134,30 @@ function markerMessageInCurrentLocaiton(markerInfo) {
   }
 }
 
+/**
+ * Insert the message into the message feed.
+ * message = {name: 'jason runzer', message: 'hello'}
+ */
+function insertMessageIntoToFeed(message, aInfoWindow, marker) {
+  var messageHTML = '<div class="message" id="'+ currentMessageId + '"><h5>'+message.name+'</h5>'+
+    '<p>'+message.message+'</p><hr></div>';
+  $("#messageFeed").prepend(messageHTML);
+  // add a click listener to the div  to open the message on the map.
+  $("#" + currentMessageId).click(function() {
+    aInfoWindow.open(map, marker)
+  });
+  messageFeedCount++;
+  // ensure that the feed only has as many as the limit
+  while(lastRemovedMessageID < messageFeedCount - MESSAGE_FEED_LIMIT) {
+    $("#" + lastRemovedMessageID).remove();
+    lastRemovedMessageID++;
+  }
+  currentMessageId++;
+};
 
+/**
+ * Takes the message contents from the text fields and sends it to the server.
+ */
 function sendMessage() {
   var text = $('#messageField').val();
   if (navigator.geolocation) {
@@ -138,8 +178,11 @@ function sendMessage() {
   }
 }
 
+/**
+ * Sends the message to the server.
+ * messageObject = {lat: 20.000, lng:21.000, name: 'jason runzer', message: 'hello'}
+ */
 function saveMessage(messageObject) {
-  console.log('save message');
   $.ajax({
     type: 'POST',
     url: '/map/saveMessage',
@@ -155,21 +198,3 @@ function saveMessage(messageObject) {
 };
 
 
-
-function insertMessageIntoToFeed(message, aInfoWindow, marker) {
-  var messageHTML = '<div class="message" id="'+ currentMessageId + '"><h5>'+message.name+'</h5>'+
-    '<p>'+message.message+'</p><hr></div>';
-  $("#messageFeed").prepend(messageHTML);
-  $("#" + currentMessageId).click(function() {
-    aInfoWindow.open(map, marker)
-  });
-  messageFeedCount++;
-  console.log('message feed count: ' + messageFeedCount);
-  while(lastRemovedMessageID < messageFeedCount - MESSAGE_FEED_LIMIT) {
-    $("#" + lastRemovedMessageID).remove();
-    lastRemovedMessageID++;
-    console.log(lastRemovedMessageID);
-    console.log('removed');
-  }
-  currentMessageId++;
-};

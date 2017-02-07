@@ -1,10 +1,16 @@
+//
+// Author: Jason Runzer
+// layout.jade
+// 2/7/2017
+// Contains the common elements of all html pages in the web app and can be extended by other files.
+//
+
 doctype html
 html
   head
     title= title
     link(rel='stylesheet', href='stylesheets/bootstrap.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
-    script(src='/javascripts/javascripts.js')
     script(src='/javascripts/oAuth.js')
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js')
     meta(name="google-signin-scope" content="profile email")

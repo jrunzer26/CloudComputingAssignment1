@@ -1,28 +1,27 @@
+/** 
+ * Author: Jason Runzer
+ * oAuth.js
+ * 2/7/2017
+ * Client side javascript for google authentication.
+ */
 
+/**
+ * Signs in the google user.
+ */
 function onSignIn(googleUser) {
+  // check if the user is already signed in, and redirect to the map page.
   if (!(sessionStorage.getItem('logout') == 'true')) {
     var profile = googleUser.getBasicProfile();
-    console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-    console.log('Name: ' + profile.getName());
-    console.log('Image URL: ' + profile.getImageUrl());
-    console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
     var id_token = googleUser.getAuthResponse().id_token;
-    console.log("Token: " + id_token);
     authenticateWithBackend(profile);
   } else {
     authLogout();
-    
   }
 }
 
-function authLogout() {
-  sessionStorage.removeItem('logout');
-  var auth2 = gapi.auth2.getAuthInstance();
-  auth2.signOut().then(function () {
-  console.log('User signed out.');
-  });
-}
-
+/**
+ * Authenticates the google profile with the backend.
+ */
 function authenticateWithBackend(profile) {
   $.ajax({
     type: 'POST',
@@ -44,15 +43,32 @@ function authenticateWithBackend(profile) {
   });
 }
 
+/**
+ * Logs the user out of the google authentication.
+ */
+function authLogout() {
+  // remove the session information
+  sessionStorage.removeItem('logout');
+  var auth2 = gapi.auth2.getAuthInstance();
+  auth2.signOut().then(function () {
+    console.log('User signed out.');
+  });
+}
 
+/**
+ * Sets the logut session information to true, for redirection to the login page
+ * to prevent auto login.
+ */
 function signOut() {
   console.log("signing out");
   sessionStorage.setItem('logout', 'true');
   redirectLogout();
 }
 
+/**
+ * Redirects the user to the logout page.
+ */
 function redirectLogout() {
-  console.log('redirect logout');
   $.ajax({
     type: 'GET',
     url: '/logout',
@@ -66,7 +82,9 @@ function redirectLogout() {
   });
 }
 
-
+/**
+ * Redirectes the user to the main map page.
+ */
 function redirectToMap(profile) {
   $.ajax({
     type: 'POST',
