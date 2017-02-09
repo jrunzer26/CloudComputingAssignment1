@@ -33,7 +33,9 @@ router.post('/googleAuth', function(req, res, next) {
  * Logout and remove session cookies, redirect to the login page.
  */
 router.get('/logout', function(req, res, next) {
-  res.clearCookie();
+  res.clearCookie('img');
+  res.clearCookie('name');
+  res.clearCookie('email');
   res.redirect('/');
 });
 
